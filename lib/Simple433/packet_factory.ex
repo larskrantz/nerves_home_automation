@@ -50,6 +50,10 @@ defmodule NervesHomeAutomation.Simple433.PacketFactory do
   end
   def create_datagram(_), do: {:error, "Argument error, check input"}
 
+  def create_packet(datagram, timing_ms) when is_list(datagram) and is_integer(timing_ms) do
+    packet = to_packet(datagram, timing_ms)
+    {:ok, packet}
+  end
   # Private parts
 
 
@@ -67,4 +71,9 @@ defmodule NervesHomeAutomation.Simple433.PacketFactory do
     |> to_datagram
   end
 
+  defp to_packet(list, timing_ms) when is_list(list), do: Enum.flat_map(list, &(to_packet(&1,timing_ms)))
+  defp to_packet(:sync, timing_ms), do: [{1, timing_ms * 1}, { 0, timing_ms * 10}]
+  defp to_packet(:pause, timing_ms), do: [{1, timing_ms * 1}, { 0, timing_ms * 40}]
+  defp to_packet(:one, timing_ms), do: [{1, timing_ms * 1}, { 0, timing_ms * 1}]
+  defp to_packet(:zero, timing_ms), do: [{1, timing_ms * 1}, { 0, timing_ms * 5}]
 end
