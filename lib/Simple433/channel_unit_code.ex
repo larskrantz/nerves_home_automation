@@ -41,4 +41,8 @@ defmodule NervesHomeAutomation.Simple433.ChannelUnitCode do
   def to_datastream(:anslut, unit), do: to_datastream(:proove, unit)
   def to_datastream(_,_), do: {:error, "Unsupported brand or unit"}
 
+  def to_datastream!(brand, code) do
+    {:ok, datastream} = to_datastream(brand, code)
+    datastream
+  end
  end

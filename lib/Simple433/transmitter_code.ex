@@ -1,4 +1,5 @@
 defmodule NervesHomeAutomation.Simple433.TransmitterCode do
+  alias NervesHomeAutomation.Simple433.Transmitter
   @maxpossibleaddress 0b11111111111111111111111111
 
   @moduledoc """
@@ -13,6 +14,7 @@ defmodule NervesHomeAutomation.Simple433.TransmitterCode do
     iex> NervesHomeAutomation.Simple433.TransmitterCode.to_datastream(39291)
     {:ok, [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 0]}
   """
+  def to_datastream(%Transmitter{transmitter_code: code}), do: to_datastream(code)
   def to_datastream(code) when is_integer(code) and code > 0 and code <= @maxpossibleaddress do
     transmitter_code = code
     |> Integer.digits(2)
@@ -22,6 +24,11 @@ defmodule NervesHomeAutomation.Simple433.TransmitterCode do
   end
   def to_datastream(_) do
     {:error, "not a valid code, must be a positive integer equal or less to #{@maxpossibleaddress}."}
+  end
+
+  def to_datastream!(code) do
+    {:ok, datastream} = to_datastream(code)
+    datastream
   end
 
   defp to_send_data(bitlist), do: to_send_data(bitlist, [])
